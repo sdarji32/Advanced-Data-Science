@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<! Link to HTML application: https://sdarji32.github.io/Advanced-Data-Science/>
 <html lang="en">
 <head>
     <title>SVG ScatterPlot</title>
@@ -41,9 +42,9 @@
     <div id="div"></div>
     <div id="Graph"></div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script>var w = 950;
-    var h = 720;
-    var mar = {top: 20, right: 20, bottom: 45, left: 50};
+    <script>var w = 650;
+    var h = 650;
+    var mar = {top: 20, right: 20, bottom: 60, left: 60};
     var bucket = [];
 
     for (var i=0;i<=10;i++) {
@@ -110,16 +111,16 @@
 
     // x-axis and y-axis setup
     var xLabel = d3.scaleLinear()
-        .domain([1, 10])
+        .domain([0, 10])
         .range([0, w]);
 
     var yLabel = d3.scaleLinear()
-        .domain([1, 10])
-        .range([h, 0]);
+        .domain([0, 10])
+        .range([h/.85, 0]);
 
     var tooltip = d3.select("#Graph").append("div").attr('class', 'tooltip');
     //d3 declaration
-    var svg = d3.select("#Graph").append("svg").attr("width",w).attr("height",h).attr("class","canvas").append("g").attr("transform","translate(60,60)" );
+    var svg = d3.select("#Graph").append("svg").attr("width",w).attr("height",h).attr("class","canvas").append("g").attr("transform","translate(85,85)" );
     svg.selectAll("circle")
         .data(coordinates)
         .enter()
@@ -128,11 +129,22 @@
         .attr("cx",function(d)
         {return d.x*60})
         .attr("cy",function(d)
-        {return d.y*60})
+        {return h - (d.y-1)*60})
         .attr("fill","blue")
         .attr("class", "coord")
-        .on("mouseover", function(d){return tooltip.style("visibility", "visible");})
-        .on("mousemove", function(d){console.log(d); tooltip.style("top", (event.clientX)+"px").style("left", (event.clientY)+"px");});
+        .on("mouseover", function(d){
+            tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function(d){
+            tooltip.text(d.x + ", " + d.y);
+            tooltip.style("top", (event.pageY) + "px")
+            tooltip.style("left", (event.pageX) + "px")
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0.7);
+        });
 
     svg.selectAll("text")
         .data(coordinates)
@@ -158,20 +170,14 @@
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - mar.left)
         .attr("x",0 - (h / 2))
-        .attr("dy", "1em")
+        //.attr("dy", "1em")
         .attr("class", "axis-label")
         .text("Weight(kg)");
 
-    // y-axis grid lines
-    svg.append("g")
-        .attr("class", "grid")
-        .call(d3.axisLeft(yLabel)
-            .tickSize(-w)
-            .tickFormat("")
-        )
     // x-axis label
     svg.append("text")
-        .attr("transform", "rotate(-2*90) transateY(50%)")
+        .attr("transform", "rotate(-2*90) ")
+        .attr('style', 'transform: translateY(590px)')
         .attr("y", 0 - mar.bottom)
         .attr("class", "axis-label")
         .text("Height(cm)");
@@ -179,7 +185,7 @@
     // x-axis
     svg.append("g")
         .attr('class', 'axis')
-        .attr('style', 'transform: translateY(637px)')
+        .attr('style', 'transform: translateY(495px)')
         .call(d3.axisBottom(xLabel));
 
 
